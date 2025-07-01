@@ -87,4 +87,85 @@
         ]
       },
       {
-        question:
+        question: "Which language runs in a web browser?",
+        answers: [
+          { text: "Python", correct: false },
+          { text: "JavaScript", correct: true },
+          { text: "C", correct: false },
+          { text: "Java", correct: false }
+        ]
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+
+    const questionEl = document.getElementById("question");
+    const answerButtonsEl = document.getElementById("answer-buttons");
+    const nextButton = document.getElementById("next-btn");
+
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      resetState();
+      const currentQuestion = questions[currentQuestionIndex];
+      questionEl.innerText = currentQuestion.question;
+
+      currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerText = answer.text;
+        button.classList.add("btn");
+        if (answer.correct) {
+          button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+        answerButtonsEl.appendChild(button);
+      });
+    }
+
+    function resetState() {
+      nextButton.style.display = "none";
+      while (answerButtonsEl.firstChild) {
+        answerButtonsEl.removeChild(answerButtonsEl.firstChild);
+      }
+    }
+
+    function selectAnswer(e) {
+      const selectedBtn = e.target;
+      const isCorrect = selectedBtn.dataset.correct === "true";
+      if (isCorrect) {
+        selectedBtn.style.backgroundColor = "#28a745"; // green
+      } else {
+        selectedBtn.style.backgroundColor = "#dc3545"; // red
+      }
+
+      Array.from(answerButtonsEl.children).forEach(button => {
+        button.disabled = true;
+      });
+
+      nextButton.style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        showQuestion();
+      } else {
+        showScore();
+      }
+    }
+
+    function showScore() {
+      resetState();
+      questionEl.innerText = `Quiz completed!`;
+      nextButton.innerText = "Restart";
+      nextButton.onclick = () => location.reload();
+      nextButton.style.display = "inline-block";
+    }
+
+    startQuiz();
+  </script>
+</body>
+</html>
